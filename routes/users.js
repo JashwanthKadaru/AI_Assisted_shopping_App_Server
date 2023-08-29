@@ -1,26 +1,42 @@
 import express from 'express'
-import userFunc from '../utilities/User.js' 
+import {insertUser, verifyUser} from '../utilities/User.js' 
 
 const router = express.Router();
 
 // To verify Login
-router.post("/smartfashionstore/login",(req, res) => {
+router.post("/login",async (req, res) => {
     
     const username = req.body.username;
     const password = req.body.password;
-
-    const user = userFunc.verifyUser(username, password);
-
-    res.send(`Message from server: The user is ${JSON.parse(user)}`);
+    let user = null;
+    try{
+         user = await verifyUser(username, password);
+         console.log(user);
+    }catch(err){
+        console.error(err);
+        res.status(500).json();
+    }
+    
+    res.json(user);
 })
 
 
 // To register users
-router.post("/smartfashionstore/register",(req, res) => {
+router.post("/register", async(req, res) => {
     const params = req.body;
     
-    res.send(`Message from server: The username u sent is ${params.username}, and password is ${params.password}, and fullname is ${params.fullname}, and email is ${params.email}, and ${params.picture}`)
+    try{
+        const newUser = await insertUser(params.username, params.password, params.email, params.fullname, params.picture);
 
+        if(newUser) {
+            console.log("\n\nnew User:\n",newUser);
+            res.json({success: true, userId: newUser.userID});
+        } else {
+            res.json({success: false, userId: null});
+        }
+    } catch(error) {
+        res.status(500).json();
+    }
 })
 
 
