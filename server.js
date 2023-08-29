@@ -11,7 +11,6 @@ import Purchases from './models/Purchases.js';
 
 const app = express();
 const PORT = 5123;
-const API_KEY = "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";
 let isReady = false;
 
 mongoose.connect('mongodb://0.0.0.0:27017/smartstore', {
