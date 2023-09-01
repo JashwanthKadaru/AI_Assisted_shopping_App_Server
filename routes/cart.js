@@ -1,10 +1,10 @@
 import express from 'express'
-import {createCart, retrieveCart, updateCart, deleteCart} from '../utilities/Cart.js'
+import {createCart, retrieveCart, updateCart} from '../utilities/Cart.js'
 
 const router = express.Router();
 
-router.get("/user", async (req, res) => {
-    const username = req.body.username;
+router.get("/user/:username", async (req, res) => {
+    const username = req.params.username;
 
     try{
         const cartList = await retrieveCart(username);
@@ -20,6 +20,30 @@ router.get("/user", async (req, res) => {
         res.status(500).json();
     }
     
+})
+
+router.patch("/user/:username/update", async (req, res) => {
+    const username = req.params.username;
+    const op = req.body.op;
+    const itemID = req.body.itemID;
+    const qty = req.body.qty;
+
+    try{
+        const result = await updateCart(username, itemID, qty, op);
+
+        if(result.success) {
+            console.log("cart updated successfully.");
+            res.json(result);
+        } else {
+            console.log("Couldn't update cart successfully. Error message: \n\n", result.error );
+            console.log("Checkpoint 2");
+            res.json(result);
+        }
+
+    } catch(error) {
+        console.log("An internal server error occurred.");
+        res.status(500).json();        
+    }
 })
 
 router.post("/user", async (req, res) => {
@@ -40,47 +64,48 @@ router.post("/user", async (req, res) => {
     }
 })
 
-router.patch("/user", async (req, res) => {
-    const cart = req.body.cart;
-    const username = req.body.username;
+// router.patch("/user", async (req, res) => {
+//     const cart = req.body.cart;
+//     const username = req.body.username;
+//     console.log(req.body);
 
-    try {
-        const result = await updateCart(username, cart);
+//     try {
+//         const result = await updateCart(username, cart);
 
-        if(result.success) {
-            console.log('cart updated successfully.');
-            res.json(result);
-        } else if(result.newCart){
-            console.log('Failed to update cart.');
-            res.json(result);
-        } else {
-            console.log('Failed to find cart for username', username);
-            res.json(result);
-        }
-    } catch(error) {
-        res.status(500).send("An internal error occured. We are sorry!")
-    }
-})
+//         if(result.success) {
+//             console.log('cart updated successfully.');
+//             res.json(result);
+//         } else if(result.newCart){
+//             console.log('Failed to update cart.');
+//             res.json(result);
+//         } else {
+//             console.log('Failed to find cart for username', username);
+//             res.json(result);
+//         }
+//     } catch(error) {
+//         res.status(500).send("An internal error occured. We are sorry!")
+//     }
+// })
 
-router.delete("/user", async (req, res) => {
-    const username = req.body.username;
+// router.delete("/user", async (req, res) => {
+//     const username = req.body.username;
 
-    try {
-        const result = await deleteCart(username);
-        if(result.success) {
-            // code sepcific for success scenario, can be added here if needed later.
-            console.log('cart deleted successfully. username: ', username);
-            res.json(result);
-        } else {
-             // code sepcific for failure scenario, can be added here if needed later.
-            console.log('Failed to delete cart. username: ', username);
-            res.json(result);
-        }
-    } catch(error) {
-        console.error('An error occured while deleting cart. username: ', username);
-        res.status(500).send("An internal error occured. We are sorry!");
-    }
+//     try {
+//         const result = await deleteCart(username);
+//         if(result.success) {
+//             // code sepcific for success scenario, can be added here if needed later.
+//             console.log('cart deleted successfully. username: ', username);
+//             res.json(result);
+//         } else {
+//              // code sepcific for failure scenario, can be added here if needed later.
+//             console.log('Failed to delete cart. username: ', username);
+//             res.json(result);
+//         }
+//     } catch(error) {
+//         console.error('An error occured while deleting cart. username: ', username);
+//         res.status(500).send("An internal error occured. We are sorry!");
+//     }
 
-})
+// })
 
 export default router;
