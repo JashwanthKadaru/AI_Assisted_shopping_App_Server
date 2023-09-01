@@ -63,42 +63,42 @@ router.post("/new",async (req, res) => {
     }
 })
 
-// PATCH URL for buying product 
-router.patch("/", async (req, res) => {
-    const productList = req.body.pList;
+// PATCH URL for updating product 
+// router.patch("/", async (req, res) => {
+//     const productList = req.body.pList;
 
-    try {
-        const result = await updateProduct(productList);
+//     try {
+//         const result = await updateProduct(productList);
 
-        if(result.success) {
-            console.log(`Successfully updated product.`);
-            res.json(result);
-        } else {
-            console.log(`Couldn't update product with productId : ${productId}`);
-            res.json(result);
-        }
-    } catch(error) {
-        res.status(500).send(`An Internal Server Error occurred. We are sorry!`); 
-    }
-})
+//         if(result.success) {
+//             console.log(`Successfully updated product.`);
+//             res.json(result);
+//         } else {
+//             console.log(`Couldn't update product with productId : ${productId}`);
+//             res.json(result);
+//         }
+//     } catch(error) {
+//         res.status(500).send(`An Internal Server Error occurred. We are sorry!`); 
+//     }
+// })
 
 // DELETE URL for deleting products
-router.delete("/rm", async (req, res) => {
-    const productId = req.body.Id;
+// router.delete("/rm", async (req, res) => {
+//     const productId = req.body.Id;
 
-    try{
-        const result = await deleteProductById(productId);
+//     try{
+//         const result = await deleteProductById(productId);
 
-        if(result.success) {
-            console.log(`Successfully deleted product.`);
-            res.json(result);
-        } else {
-            console.log(`Couldn't delete product with productId : ${productId}`);
-            res.json(result);
-        }
-    } catch(error) {
-        res.status(500).send(`An Internal Server Error occurred. We are sorry!`); 
-    }
-})
+//         if(result.success) {
+//             console.log(`Successfully deleted product.`);
+//             res.json(result);
+//         } else {
+//             console.log(`Couldn't delete product with productId : ${productId}`);
+//             res.json(result);
+//         }
+//     } catch(error) {
+//         res.status(500).send(`An Internal Server Error occurred. We are sorry!`); 
+//     }
+// })
 
 export default router;
