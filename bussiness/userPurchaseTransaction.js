@@ -22,7 +22,7 @@ export async function userPurchaseTransaction(username, userCartList) {
             const productItem = await Product.findOne({productID: item.productID});
 
             // If item with given itemId not found.
-            if(productItem) {
+            if(!productItem) {
                 status = false;
                 statusCode = 1;
                 successMessage = "";

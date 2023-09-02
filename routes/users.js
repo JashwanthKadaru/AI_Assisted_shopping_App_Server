@@ -7,17 +7,6 @@ import {createCart} from '../utilities/Cart.js'
 import multer from 'multer';
 import nodemailer from 'nodemailer';
 
-
-const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 587,
-    secure: false,
-    auth: {
-        user: "smartfashionstoreorg@gmail.com",
-        pass: "smart@fashion129"
-    }
-});
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -84,15 +73,24 @@ router.post("/register",  upload.single('picture'), async(req, res) => {
             const result2 = await createCart(params.username);
             if(result2.success) {
                 console.log("cart created:",result2);
+                console.log("userEmail1234");
+                console.log("userEmail", params.email);
                 
-                console.log("userEmail", newUser.userEmail);
+                const transporter = nodemailer.createTransport({
+                    service: 'gmail',
+                    auth: {
+                        user: "smartfashionstoreorg@gmail.com",
+                        pass: "uastycviqkjcncqj"
+                    }
+                });
+                
                 const mailOptions = {
                     from: 'smartfashionstoreorg@gmail.com',
-                    to: newUser.userEmail,
+                    to: `${params.email}`,
                     subject: 'Hello from Smart Fashion Store',
                     text: 
                     `
-                    Dear ${newUser.userFullName},
+                    Dear ${params.fullname},
                     
                     You have successfully registered on our platform. Welcome aboard!!!
                     

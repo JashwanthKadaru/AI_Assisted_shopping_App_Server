@@ -1,4 +1,6 @@
-import express from 'express'
+import express from 'express';
+import User from '../models/User.js';
+import nodemailer from 'nodemailer';
 import {retrievePurchasesList} from '../utilities/Purchases.js';
 import {userPurchaseTransaction} from '../bussiness/userPurchaseTransaction.js';
 const router = express.Router();
@@ -32,12 +34,50 @@ router.post("/:username/transaction-started", async (req, res) => {
         const result = await userPurchaseTransaction(username, userPurchaseList);
         if(result.success) {
             console.log("Purchase successfull.");
+
+            const user = await User.findOne({userName: username});
+
+            const transporter = nodemailer.createTransport({
+                    service: 'gmail',
+                    auth: {
+                        user: "smartfashionstoreorg@gmail.com",
+                        pass: "uastycviqkjcncqj"
+                    }
+                });
+                
+                const mailOptions = {
+                    from: 'smartfashionstoreorg@gmail.com',
+                    to: `${user.userEmail}`,
+                    subject: 'Purchase Success!!!',
+                    text: 
+                    `
+Dear ${user.userFullName},
+
+You have successfully Purchased the following items on our platform. Looking forward for more shopping with you!!!
+                    
+s.no.  ${"name".padEnd(35, ' ')}  qty  total
+${userPurchaseList.map((item,index) => {return `${(index+1+" ").padEnd(5, ' ')}  ${item.productName.padEnd(35, ' ')}  ${item.cartQty}  ${item.cartQty*item.productPrice}\n`})}
+
+
+With Regards,
+Smart-Fashion-Store.org
+                    `,
+                };
+
+                try {
+                    const info = await transporter.sendMail(mailOptions);
+                    console.log('Email sent:', info.response);
+                } catch (error) {
+                    console.error('Error sending email:', error);
+                }
+
             res.json(result);
         } else {
             console.log("Purchase failed.");
             res.json(result);
         }
     } catch(error) {
+        console.log(error);
         res.status(500).send(`An Internal Server Error occurred. We are sorry!`);
     }
 })
