@@ -32,7 +32,7 @@ export async function updateProduct(productList) {
     }
 }
 
-export async function createProduct(productName1, productPrice1, productQty1, productDescription1, productShortDescription1, productType1) {
+export async function createProduct(productName1, productPrice1, productQty1, productDescription1, productShortDescription1, productType1, productPicture1) {
     try{
         let productID1 = uuidv4();
         let newProduct = new Product({
@@ -43,6 +43,7 @@ export async function createProduct(productName1, productPrice1, productQty1, pr
             productPrice: productPrice1,
             productQty: productQty1,
             productType: productType1,
+            productPicture: productPicture1,
         });
 
         const product = await newProduct.save();
@@ -81,7 +82,7 @@ export async function retrieveProductList() {
 
 export async function retrieveProductById(prodID) {
     try{
-        const result = await Product.find({productID:prodID});
+        const result = await Product.findOne({productID:prodID});
         if(result){
             console.log(`Found product with porduct id: ${prodID}`);
             return result;

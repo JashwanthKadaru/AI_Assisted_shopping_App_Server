@@ -142,6 +142,7 @@ export async function updateCart(username, itemID, qty, op) {
                     productName: product_in_stock.productName,
                     productPrice: product_in_stock.productPrice,
                     productType: product_in_stock.productType,
+                    productPicture: product_in_stock.productPicture,
                     cartQty: 1, 
                 }
 

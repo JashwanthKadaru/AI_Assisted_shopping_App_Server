@@ -1,5 +1,25 @@
 import express from 'express'
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import {createProduct, retrieveProductList, retrieveProductById, updateProduct, deleteProductById} from '../utilities/Product.js'
+import multer from 'multer';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, path.join(__dirname, '../public/img')); 
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + '-' + file.originalname);
+  },
+});
+
+const upload = multer({ storage: storage });
+
+
 // setting up router for products api
 const router = express.Router();
 
@@ -47,9 +67,23 @@ router.get("/:id", async (req, res) => {
 // POST URL for adding a product
 router.post("/new",async (req, res) => {
     const product = req.body;
+    const picture = req.file;
 
     try {
-        const newProduct = await createProduct(product.productName, product.productPrice, product.productQty, product.productDescription, product.productShortDescription, product.productType);
+        if (!picture) {
+            res.status(400).json({ success: false, errorMessage: 'No image uploaded' });
+            return;
+         }
+
+        console.log('Uploaded image path:', picture.path);
+
+        const imageFileName = picture.filename; 
+        const imageDestination = path.join(__dirname, '../public/img', imageFileName); 
+        console.log('Image destination filename:', imageDestination);
+        fs.renameSync(picture.path, imageDestination);
+        const picturePathInDB = imageFileName;
+
+        const newProduct = await createProduct(product.productName, product.productPrice, product.productQty, product.productDescription, product.productShortDescription, product.productType, picturePathInDB);
         
         if(newProduct) {
             console.log(`new product created: ${newProduct}`);
