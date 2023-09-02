@@ -4,7 +4,7 @@ import userRoutes from './routes/users.js';
 import cartRoutes from './routes/cart.js';
 import productRoutes from './routes/products.js';
 import purchaseRoutes from './routes/purchases.js';
-
+import imagesRouter from './routes/images.js';
 import fs from 'fs';
 import {v4 as uuidv4} from 'uuid';
 import mongoose from 'mongoose';
@@ -35,7 +35,9 @@ app.use(cors({
 }));
 
 app.use(bodyParser.json());
-app.use(express.static('public'))
+app.use('/images',express.static('public/img'))
+
+app.use('/smartfashionstore/public', imagesRouter)
 app.use('/smartfashionstore/', userRoutes);
 app.use('/smartfashionstore/cart', cartRoutes);
 app.use('/smartfashionstore/products', productRoutes);

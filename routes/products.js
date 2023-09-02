@@ -49,7 +49,7 @@ router.post("/new",async (req, res) => {
     const product = req.body;
 
     try {
-        const newProduct = await createProduct(product.productName, product.productPrice, product.productQty, product.productDescription, product.productShortDescription);
+        const newProduct = await createProduct(product.productName, product.productPrice, product.productQty, product.productDescription, product.productShortDescription, product.productType);
         
         if(newProduct) {
             console.log(`new product created: ${newProduct}`);
